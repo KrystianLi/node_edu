@@ -19,3 +19,5 @@
     -添加一个远程仓库地址
 +git push origin master
     -推送到远程仓库的master分支
++git mv old_filename new_filename
+    -重命名文件
