@@ -40,73 +40,41 @@
                         <th>操作</th>
                     </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody>
+                    {% for item in adverts %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>
+                            <img src="/upload/{{item.image }}" style="width: 100px;" alt="">
+                        </td>
+                        <td>{{ item.link }}</td>
+                        <td>{{ item.start_time }}</td>
+                        <td>{{ item.end_time }}</td>
+                        <td>
+                            <a href="javascript:;" class="btn btn-info btn-xs">编辑</a>
+                            <a href="/advert/del/{{item.id}}" class="btn btn-danger btn-xs">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
 
             </table>
         </div>
         <!-- 分页 -->
-        <ul id="pagination" class="pagination pull-right">
-
+        <ul class="pagination pull-right">
+            <li><a href="/advert?page={{ page - 1 }}">上一页</a></li>
+            {% for i in range(0, pageSize) -%}
+            {% if (i + 1 == page) %}
+            <li class="active"><a href="/advert?page={{ i + 1 }}">{{ i + 1 }}</a></li>
+            {% else %}
+            <li><a href="/advert?page={{ i + 1 }}">{{ i + 1 }}</a></li>
+            {% endif %}
+            {%- endfor %}
+            <li><a href="/advert?page={{ page + 1 }}">下一页</a></li>
         </ul>
     </div>
 </div>
 {% endblock %}
 {% block script %}
-<script src="../node_modules/art-template/lib/template-web.js"></script>
-<script type="text/html" id="tpl">
-    <% for(var i = 0; i < adverts.length; i++){ %>
-    <tr>
-        <td><%= i %></td>
-        <td><%= adverts[i].title %></td>
-        <td>
-            <img src="/upload/<%=adverts[i].image %>" style="width: 100px;" alt="">
-        </td>
-        <td><%= adverts[i].link %></td>
-        <td><%= adverts[i].start_time %></td>
-        <td><%= adverts[i].end_time %></td>
-        <td>
-            <a href="javascript:;" class="btn btn-info btn-xs">编辑</a>
-            <a href="/advert/del/<%=adverts[i].id %>" class="btn btn-danger btn-xs">删除</a>
-        </td>
-    </tr>
-    <% } %>
-</script>
-<script src="../node_modules/twbs-pagination/jquery.twbsPagination.js"></script>
-<script>
-    let totalSize = 3
-    $.ajax({
-        url: '/advert/count',
-        type: 'get',
-        data: {
-            totalSize
-        }
-    }).then(data => {
-        if (data.error_code === 0) {
-            $('#pagination').twbsPagination({
-                totalPages: data.pageSize,
-                visiblePages: totalSize,
-                first: '首页',
-                prev: '上一页',
-                next: '下一页',
-                last: '最后一页',
-                onPageClick: function (event, page) {
-                    $.ajax({
-                        url: '/advert/list',
-                        type: 'get',
-                        data: {
-                            totalPage: page,
-                            totalSize: totalSize
-                        }
-                    }).then(adverts => {
-                        let htmlStr = template('tpl', adverts)
-                        $('#tbody').html(htmlStr)
-                    })
-                }
-            });
-        }
-    })
-
-
-</script>
 {% endblock %}
